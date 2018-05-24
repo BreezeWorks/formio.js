@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/formio/formio.js.git"
+    "url": "git+https://github.com/BreezeWorks/formio.js.git"
   },
   "contributors": [
     {
