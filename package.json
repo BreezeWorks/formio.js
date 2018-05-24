@@ -1,6 +1,6 @@
 {
-  "name": "formiojs",
-  "version": "3.0.0-alpha.18",
+  "name": "@breezeworks/formiojs",
+  "version": "3.0.0-alpha.18-bw",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "index.js",
   "files": [
@@ -30,29 +30,11 @@
     "url": "git+https://github.com/formio/formio.js.git"
   },
   "contributors": [
-    {
-      "name": "Travis Tidwell",
-      "github": "https://github.com/travist",
-      "email": "travis@form.io"
-    },
-    {
-      "name": "Randall Knutson",
-      "github": "https://github.com/randallknutson",
-      "email": "randall@form.io"
-    },
-    {
-      "name": "Doug Lee",
-      "github": "https://github.com/douglaselee",
-      "email": "douglaselee@comcast.net"
-    },
-    {
-      "name": "Eric Alter",
-      "email": "neolanders@hotmail.com"
-    },
-    {
-      "name": "Guillaume SMAHA",
-      "email": "guillaume.smaha@gmail.com"
-    }
+    "Travis Tidwell <travis@form.io>",
+    "Randall Knutson <randall@form.io>",
+    "Doug Lee <douglaselee@comcast.net>",
+    "Eric Alter <neolanders@hotmail.com>",
+    "Guillaume SMAHA <guillaume.smaha@gmail.com>"
   ],
   "license": "MIT",
   "bugs": {
@@ -126,5 +108,10 @@
     "webpack-cli": "^2.1.4",
     "webpack-stream": "^4.0.3",
     "written-number": "^0.8.1"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "author": ""
 }
