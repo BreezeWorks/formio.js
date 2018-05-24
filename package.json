@@ -1,6 +1,6 @@
 {
   "name": "@breezeworks/formiojs",
-  "version": "3.0.0-alpha.18-bw1",
+  "version": "3.0.0-alpha.18-bw2",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "index.js",
   "files": [
@@ -108,10 +108,5 @@
     "webpack-cli": "^2.1.4",
     "webpack-stream": "^4.0.3",
     "written-number": "^0.8.1"
-  },
-  "directories": {
-    "doc": "docs",
-    "test": "test"
-  },
-  "author": ""
+  }
 }
