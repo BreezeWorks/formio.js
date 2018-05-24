@@ -265,11 +265,21 @@ export default class FileComponent extends BaseComponent {
               event.preventDefault();
               element.upload(event.dataTransfer.files);
               return false;
+            },
+            onClick: (event) => {
+              event.preventDefault();
+              // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+              // a click event on it.
+              if (typeof this.hiddenFileInputElement.trigger === 'function') {
+                this.hiddenFileInputElement.trigger('click');
+              }
+              else {
+                this.hiddenFileInputElement.click();
+              }
             }
           },
           [
             this.ce('i', {class: this.iconClass('cloud-upload')}),
-            this.text(' Drop files to attach, or '),
             this.buildBrowseLink()
           ]
           ) :
@@ -279,21 +289,10 @@ export default class FileComponent extends BaseComponent {
   }
 
   buildBrowseLink() {
-    this.browseLink = this.ce('a', {
+    this.browseLink = this.ce('span', {
       href: '#',
-      onClick: (event) => {
-        event.preventDefault();
-        // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
-        // a click event on it.
-        if (typeof this.hiddenFileInputElement.trigger === 'function') {
-          this.hiddenFileInputElement.trigger('click');
-        }
-        else {
-          this.hiddenFileInputElement.click();
-        }
-      },
       class: 'browse'
-    }, 'browse');
+    }, 'Tap to choose file');
 
     return this.browseLink;
   }

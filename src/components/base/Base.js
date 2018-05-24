@@ -77,7 +77,7 @@ export default class BaseComponent {
       /**
        * If the value of this component should be persisted within the backend api database.
        */
-      persistent: true,
+      persistent: false,
 
       /**
        * Determines if the component should be within the form, but not visible.
@@ -692,6 +692,9 @@ export default class BaseComponent {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
+    if (this.shouldDisable) {
+      className += 'formio-disabled-input ';
+    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -1005,9 +1008,10 @@ export default class BaseComponent {
     });
 
     const removeIcon = this.ce('i', {
-      class: this.iconClass('remove-circle')
+      class: this.iconClass('remove')
     });
     removeButton.appendChild(removeIcon);
+    removeButton.appendChild(this.ce('span', null, 'Delete row'));
     return removeButton;
   }
 
@@ -1965,9 +1969,6 @@ export default class BaseComponent {
     if (!this.key) {
       return value;
     }
-    if (value === null) {
-      return value;
-    }
     _.set(this.data, this.key, value);
     return value;
   }
@@ -2162,17 +2163,7 @@ export default class BaseComponent {
    * @param dirty
    * @return {*}
    */
-  invalidMessage(data, dirty, ignoreCondition) {
-    // Force valid if component is conditionally hidden.
-    if (!ignoreCondition && !checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
-      return '';
-    }
-
-    // See if this is forced invalid.
-    if (this.invalid) {
-      return this.invalid;
-    }
-
+  invalidMessage(data, dirty) {
     // No need to check for errors if there is no input or if it is pristine.
     if (!this.hasInput || (!dirty && this.pristine)) {
       return '';
@@ -2198,7 +2189,7 @@ export default class BaseComponent {
       return true;
     }
 
-    const message = this.invalidMessage(data, dirty, true);
+    const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
@@ -2357,14 +2348,6 @@ export default class BaseComponent {
     }
 
     this._disabled = disabled;
-
-    // Add/remove the disabled class from the element.
-    if (disabled) {
-      this.addClass(this.getElement(), 'formio-disabled-input');
-    }
-    else {
-      this.removeClass(this.getElement(), 'formio-disabled-input');
-    }
 
     // Disable all inputs.
     _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));

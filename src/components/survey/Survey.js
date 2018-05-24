@@ -62,7 +62,7 @@ export default class SurveyComponent extends BaseComponent {
         const td = this.ce('td');
         td.appendChild(this.text(question.label));
         tr.appendChild(td);
-        _.each(this.component.values, (value) => {
+        _.each(this.component.values, (value, index) => {
           const td = this.ce('td', {
             style: 'text-align: center;'
           });
@@ -73,6 +73,7 @@ export default class SurveyComponent extends BaseComponent {
             id: `${this.id}-${question.value}-${value.value}`
           });
           this.addInput(input, td);
+          td.appendChild(this.ce('label', {class: 'in-cell-label'}, this.component.values[index].label));
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
