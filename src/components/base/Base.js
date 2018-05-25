@@ -1011,7 +1011,7 @@ export default class BaseComponent {
       class: this.iconClass('remove')
     });
     removeButton.appendChild(removeIcon);
-    removeButton.appendChild(this.ce('span', null, 'Delete row'));
+    removeButton.appendChild(this.ce('span', null, ' Delete row'));
     return removeButton;
   }
 
