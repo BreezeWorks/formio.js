@@ -958,7 +958,7 @@ export default class BaseComponent {
     }
     else {
       addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
+      addButton.appendChild(this.text(this.component.addAnother || ' Add another'));
       return addButton;
     }
   }
@@ -1011,7 +1011,7 @@ export default class BaseComponent {
       class: this.iconClass('remove')
     });
     removeButton.appendChild(removeIcon);
-    removeButton.appendChild(this.ce('span', null, ' Delete row'));
+    removeButton.appendChild(this.text(' Delete row'));
     return removeButton;
   }
 
