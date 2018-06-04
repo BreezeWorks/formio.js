@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/components/base/Base.js | formiojs</title>
+  <title data-ice="title">src/components/base/Base.js | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -250,17 +251,7 @@ import Promise from &apos;native-promise-only&apos;;
 import _ from &apos;lodash&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import i18next from &apos;i18next&apos;;
-import {
-  getRandomComponentId,
-  evaluate,
-  matchInputMask,
-  getInputMask,
-  interpolate,
-  hasCondition,
-  checkCondition,
-  checkTrigger,
-  setActionProperty
-} from &apos;../../utils/utils&apos;;
+import * as FormioUtils from &apos;../../utils/utils&apos;;
 import Validator from &apos;../Validator&apos;;
 import moment from &apos;moment&apos;;
 
@@ -323,7 +314,7 @@ export default class BaseComponent {
       /**
        * If the value of this component should be persisted within the backend api database.
        */
-      persistent: true,
+      persistent: false,
 
       /**
        * Determines if the component should be within the form, but not visible.
@@ -404,7 +395,7 @@ export default class BaseComponent {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = (component &amp;&amp; component.id) ? component.id : getRandomComponentId();
+    this.id = (component &amp;&amp; component.id) ? component.id : FormioUtils.getRandomComponentId();
 
     /**
      * The options for this component.
@@ -601,7 +592,7 @@ export default class BaseComponent {
       return schema;
     }
     _.each(schema, (val, key) =&gt; {
-      if (_.isObject(val) &amp;&amp; defaultSchema.hasOwnProperty(key)) {
+      if (!_.isArray(val) &amp;&amp; _.isObject(val) &amp;&amp; defaultSchema.hasOwnProperty(key)) {
         const subModified = this.getModifiedSchema(val, defaultSchema[key]);
         if (!_.isEmpty(subModified)) {
           modified[key] = subModified;
@@ -938,6 +929,9 @@ export default class BaseComponent {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
+    if (this.shouldDisable) {
+      className += &apos;formio-disabled-input &apos;;
+    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -1024,29 +1018,42 @@ export default class BaseComponent {
     }
   }
 
+  /**
+   * Create an evaluation context for all script executions and interpolations.
+   *
+   * @param additional
+   * @return {*}
+   */
+  evalContext(additional) {
+    additional = additional || {};
+    return Object.assign({
+      component: this.component,
+      row: this.data,
+      data: (this.root ? this.root.data : this.data),
+      _,
+      utils: FormioUtils,
+      util: FormioUtils,
+      moment,
+      instance: this
+    }, additional);
+  }
+
   get defaultValue() {
     let defaultValue = this.emptyValue;
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
     else if (this.component.customDefaultValue) {
-      defaultValue = evaluate(
+      defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        {
-          value: &apos;&apos;,
-          component: this.component,
-          row: this.data,
-          data: (this.root ? this.root.data : this.data),
-          _,
-          instance: this
-        },
+        {value: &apos;&apos;},
         &apos;value&apos;
       );
     }
 
     if (this._inputMask) {
       defaultValue = conformToMask(defaultValue, this._inputMask).conformedValue;
-      if (!matchInputMask(defaultValue, this._inputMask)) {
+      if (!FormioUtils.matchInputMask(defaultValue, this._inputMask)) {
         defaultValue = &apos;&apos;;
       }
     }
@@ -1173,6 +1180,8 @@ export default class BaseComponent {
         return &apos;fa fa-question-circle&apos;;
       case &apos;remove-circle&apos;:
         return &apos;fa fa-times-circle-o&apos;;
+      case &apos;new-window&apos;:
+        return &apos;fa fa-window-restore&apos;;
       default:
         return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
     }
@@ -1201,7 +1210,7 @@ export default class BaseComponent {
     }
     else {
       addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || &apos; Add Another&apos;));
+      addButton.appendChild(this.text(this.component.addAnother || &apos; Add another&apos;));
       return addButton;
     }
   }
@@ -1251,9 +1260,10 @@ export default class BaseComponent {
     });
 
     const removeIcon = this.ce(&apos;i&apos;, {
-      class: this.iconClass(&apos;remove-circle&apos;)
+      class: this.iconClass(&apos;remove&apos;)
     });
     removeButton.appendChild(removeIcon);
+    removeButton.appendChild(this.text(&apos; Delete row&apos;));
     return removeButton;
   }
 
@@ -1556,7 +1566,7 @@ export default class BaseComponent {
    */
   setInputMask(input) {
     if (input &amp;&amp; this.component.inputMask) {
-      const mask = getInputMask(this.component.inputMask);
+      const mask = FormioUtils.getInputMask(this.component.inputMask);
       this._inputMask = mask;
       input.mask = maskInput({
         inputElement: input,
@@ -1672,7 +1682,7 @@ export default class BaseComponent {
     const div = this.ce(&apos;div&apos;);
 
     // Interpolate the template and populate
-    div.innerHTML = interpolate(template, data);
+    div.innerHTML = this.interpolate(template, data);
 
     // Add actions to matching elements.
     actions.forEach(action =&gt; {
@@ -1808,7 +1818,7 @@ export default class BaseComponent {
       return this._hasCondition;
     }
 
-    this._hasCondition = hasCondition(this.component);
+    this._hasCondition = FormioUtils.hasCondition(this.component);
     return this._hasCondition;
   }
 
@@ -1825,7 +1835,7 @@ export default class BaseComponent {
       result = this.show(true);
     }
     else {
-      result = this.show(checkCondition(
+      result = this.show(FormioUtils.checkCondition(
         this.component,
         this.data,
         data,
@@ -1857,7 +1867,7 @@ export default class BaseComponent {
     const newComponent = _.cloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) =&gt; {
-      const result = checkTrigger(
+      const result = FormioUtils.checkTrigger(
         newComponent,
         logic.trigger,
         this.data,
@@ -1870,19 +1880,17 @@ export default class BaseComponent {
         changed |= logic.actions.reduce((changed, action) =&gt; {
           switch (action.type) {
             case &apos;property&apos;:
-              setActionProperty(newComponent, action, this.data, data, newComponent, result);
+              FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
               break;
             case &apos;value&apos;: {
               const oldValue = this.getValue();
-              const newValue = evaluate(
+              const newValue = this.evaluate(
                 action.value,
                 {
                   value: _.clone(oldValue),
-                  row: this.data,
-                  data: data,
+                  data,
                   component: newComponent,
-                  result: result,
-                  instance: this
+                  result
                 },
                 &apos;value&apos;
               );
@@ -2038,6 +2046,7 @@ export default class BaseComponent {
 
     // Set the changed variable.
     const changed = {
+      instance: this,
       component: this.component,
       value: this.dataValue,
       flags: flags
@@ -2360,13 +2369,9 @@ export default class BaseComponent {
 
     flags = flags || {};
     flags.noCheck = true;
-    return this.setValue(evaluate(this.component.calculateValue, {
+    return this.setValue(this.evaluate(this.component.calculateValue, {
       value: [],
-      component: this.component,
-      data,
-      row: this.data,
-      instance: this,
-      moment
+      data
     }, &apos;value&apos;), flags);
   }
 
@@ -2407,7 +2412,13 @@ export default class BaseComponent {
    */
   invalidMessage(data, dirty, ignoreCondition) {
     // Force valid if component is conditionally hidden.
-    if (!ignoreCondition &amp;&amp; !checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!ignoreCondition &amp;&amp; !FormioUtils.checkCondition(
+        this.component,
+        data,
+        this.data,
+        this.root ? this.root._form : {},
+        this
+      )) {
       return &apos;&apos;;
     }
 
@@ -2437,11 +2448,12 @@ export default class BaseComponent {
 
   checkValidity(data, dirty) {
     // Force valid if component is conditionally hidden.
-    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      this.setCustomValidity(&apos;&apos;);
       return true;
     }
 
-    const message = this.invalidMessage(data, dirty, true);
+    const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
@@ -2475,7 +2487,11 @@ export default class BaseComponent {
   }
 
   interpolate(string, data) {
-    return interpolate(string, data);
+    return FormioUtils.interpolate(string, this.evalContext(data));
+  }
+
+  evaluate(func, args, ret, tokenize) {
+    return FormioUtils.evaluate(func, this.evalContext(args), ret, tokenize);
   }
 
   setCustomValidity(message, dirty) {
@@ -2534,7 +2550,13 @@ export default class BaseComponent {
     } : (arguments[1] || {});
   }
 
+  // Maintain reverse compatibility.
   whenReady() {
+    console.warn(&apos;The whenReady() method has been deprecated. Please use the dataReady property instead.&apos;);
+    return this.dataReady;
+  }
+
+  get dataReady() {
     return Promise.resolve();
   }
 
@@ -2600,14 +2622,6 @@ export default class BaseComponent {
     }
 
     this._disabled = disabled;
-
-    // Add/remove the disabled class from the element.
-    if (disabled) {
-      this.addClass(this.getElement(), &apos;formio-disabled-input&apos;);
-    }
-    else {
-      this.removeClass(this.getElement(), &apos;formio-disabled-input&apos;);
-    }
 
     // Disable all inputs.
     _.each(this.inputs, (input) =&gt; this.setDisabled(this.performInputMapping(input), disabled));

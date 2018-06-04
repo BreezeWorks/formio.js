@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/components/day/Day.js | formiojs</title>
+  <title data-ice="title">src/components/day/Day.js | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -247,7 +248,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import moment from &apos;moment&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
-import {getLocaleDateFormatInfo} from &apos;../../utils/utils&apos;;
+import {boolValue, getLocaleDateFormatInfo} from &apos;../../utils/utils&apos;;
 
 export default class DayComponent extends BaseComponent {
   static schema(...extend) {
@@ -294,9 +295,30 @@ export default class DayComponent extends BaseComponent {
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
       : this.component.dayFirst;
-    this.hideDay = _.get(this.component, &apos;fields.day.hide&apos;, false);
-    this.hideMonth = _.get(this.component, &apos;fields.month.hide&apos;, false);
-    this.hideYear = _.get(this.component, &apos;fields.year.hide&apos;, false);
+  }
+
+  get dayRequired() {
+    return this.showDay &amp;&amp; _.get(this.component, &apos;fields.day.required&apos;, false);
+  }
+
+  get showDay() {
+    return !_.get(this.component, &apos;fields.day.hide&apos;, false);
+  }
+
+  get monthRequired() {
+    return this.showMonth &amp;&amp; _.get(this.component, &apos;fields.month.required&apos;, false);
+  }
+
+  get showMonth() {
+    return !_.get(this.component, &apos;fields.month.hide&apos;, false);
+  }
+
+  get yearRequired() {
+    return this.showYear &amp;&amp; _.get(this.component, &apos;fields.year.required&apos;, false);
+  }
+
+  get showYear() {
+    return !_.get(this.component, &apos;fields.year.hide&apos;, false);
   }
 
   get defaultSchema() {
@@ -333,12 +355,26 @@ export default class DayComponent extends BaseComponent {
     return this._months;
   }
 
-  get emptyValue() {
-    return &apos;&apos;;
-  }
+  validateRequired(setting, value) {
+    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
+    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
+    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
+    if (this.dayRequired &amp;&amp; !day) {
+      return false;
+    }
 
-  isEmpty(value) {
-    return super.isEmpty(value);
+    if (this.monthRequired &amp;&amp; month &lt; 0) {
+      return false;
+    }
+
+    if (this.yearRequired &amp;&amp; !year) {
+      return false;
+    }
+
+    if (!boolValue(setting)) {
+      return true;
+    }
+    return !this.isEmpty(value);
   }
 
   createDayInput(subinputAtTheBottom) {
@@ -468,6 +504,9 @@ export default class DayComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
+    if (!this.yearInput || !this.monthInput || !this.dayInput) {
+      return;
+    }
     if (disabled) {
       this.yearInput.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
       this.monthInput.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
@@ -489,16 +528,16 @@ export default class DayComponent extends BaseComponent {
     const [dayColumn, monthColumn, yearColumn] = this.createInputs(subinputAtTheBottom);
 
     // Add the columns to the day select in the right order.
-    if (this.dayFirst &amp;&amp; !this.hideDay) {
+    if (this.dayFirst &amp;&amp; this.showDay) {
       inputGroup.appendChild(dayColumn);
     }
-    if (!this.hideMonth) {
+    if (this.showMonth) {
       inputGroup.appendChild(monthColumn);
     }
-    if (!this.dayFirst &amp;&amp; !this.hideDay) {
+    if (!this.dayFirst &amp;&amp; this.showDay) {
       inputGroup.appendChild(dayColumn);
     }
-    if (!this.hideYear) {
+    if (this.showYear) {
       inputGroup.appendChild(yearColumn);
     }
 
@@ -562,19 +601,19 @@ export default class DayComponent extends BaseComponent {
    */
   setValueAt(index, value) {
     if (!value) {
-      return;
+      return null;
     }
     const parts = value.split(&apos;/&apos;);
-    if (this.component.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (this.component.dayFirst &amp;&amp; this.showDay) {
       this.dayInput.value = parseInt(parts.shift(), 10);
     }
-    if (!_.get(this.component, &apos;fields.month.hide&apos;, false)) {
+    if (this.showMonth) {
       this.monthInput.value = parseInt(parts.shift(), 10);
     }
-    if (!this.component.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (!this.component.dayFirst &amp;&amp; this.showDay) {
       this.dayInput.value = parseInt(parts.shift(), 10);
     }
-    if (!_.get(this.component, &apos;fields.year.hide&apos;, false)) {
+    if (this.showYear) {
       this.yearInput.value = parseInt(parts.shift(), 10);
     }
   }
@@ -585,16 +624,16 @@ export default class DayComponent extends BaseComponent {
    */
   get format() {
     let format = &apos;&apos;;
-    if (this.component.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (this.component.dayFirst &amp;&amp; this.showDay) {
       format += &apos;D/&apos;;
     }
-    if (!_.get(this.component, &apos;fields.month.hide&apos;, false)) {
+    if (this.showMonth) {
       format += &apos;M/&apos;;
     }
-    if (!this.component.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (!this.component.dayFirst &amp;&amp; this.showDay) {
       format += &apos;D/&apos;;
     }
-    if (!_.get(this.component, &apos;fields.year.hide&apos;, false)) {
+    if (this.showYear) {
       format += &apos;YYYY&apos;;
     }
     return format;
@@ -605,10 +644,22 @@ export default class DayComponent extends BaseComponent {
    * @returns {Date}
    */
   get date() {
-    const day = this.dayInput.value;
-    const month = this.monthInput.value;
-    const year = this.yearInput.value;
-    return moment([parseInt(year, 10), (parseInt(month, 10) - 1), parseInt(day, 10)]);
+    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
+    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
+    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
+    if (this.showDay &amp;&amp; !day) {
+      // Invalid so return null
+      return null;
+    }
+    if (this.showMonth &amp;&amp; (month &lt; 0)) {
+      // Invalid so return null
+      return null;
+    }
+    if (this.showYear &amp;&amp; !year) {
+      // Invalid so return null
+      return null;
+    }
+    return moment([year, month, day]);
   }
 
   /**
@@ -617,7 +668,12 @@ export default class DayComponent extends BaseComponent {
    * @returns {Date}
    */
   get validationValue() {
-    return this.date.format();
+    const date = this.date;
+    if (!date) {
+      return null;
+    }
+
+    return date.format();
   }
 
   /**
@@ -627,23 +683,33 @@ export default class DayComponent extends BaseComponent {
    * @returns {*}
    */
   getValueAt(index) {
-    this.inputs[index].value = this.date.format(this.format);
-    return this.inputs[index].value;
+    const date = this.date;
+    if (date) {
+      this.inputs[index].value = date.format(this.format);
+      return this.inputs[index].value;
+    }
+    else {
+      this.inputs[index].value = &apos;&apos;;
+      return null;
+    }
   }
 
   getView() {
     const date = this.date;
+    if (!date) {
+      return null;
+    }
     return date.isValid() ? date.format(this.format) : null;
   }
 
   focus() {
-    if (this.dayFirst &amp;&amp; !this.hideDay || !this.dayFirst &amp;&amp; this.hideMonth &amp;&amp; !this.hideDay) {
+    if (this.dayFirst &amp;&amp; this.showDay || !this.dayFirst &amp;&amp; !this.showMonth &amp;&amp; this.showDay) {
       this.dayInput.focus();
     }
-    else if (this.dayFirst &amp;&amp; this.hideDay &amp;&amp; !this.hideMonth || !this.dayFirst &amp;&amp; !this.hideMonth) {
+    else if (this.dayFirst &amp;&amp; !this.showDay &amp;&amp; this.showMonth || !this.dayFirst &amp;&amp; this.showMonth) {
       this.monthInput.focus();
     }
-    else if (this.hideDay &amp;&amp; this.hideMonth &amp;&amp; !this.hideYear) {
+    else if (!this.showDay &amp;&amp; !this.showDay &amp;&amp; this.showYear) {
       this.yearInput.focus();
     }
   }

@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../">
-  <title data-ice="title">src/WebformBuilder.js | formiojs</title>
+  <title data-ice="title">src/WebformBuilder.js | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -244,7 +245,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/WebformBuilder.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Webform from &apos;./Webform&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* global $ */
+
+import Webform from &apos;./Webform&apos;;
 import dragula from &apos;dragula&apos;;
 import Components from &apos;./components/Components&apos;;
 import BuilderUtils from &apos;./utils/builder&apos;;
@@ -311,12 +314,12 @@ export default class WebformBuilder extends Webform {
 
         const removeButton = this.ce(&apos;div&apos;, {
           class: &apos;btn btn-xxs btn-danger component-settings-button component-settings-button-remove&apos;
-        }, this.ce(&apos;span&apos;, {class: &apos;glyphicon glyphicon-remove&apos;}));
+        }, this.getIcon(&apos;remove&apos;));
         this.addEventListener(removeButton, &apos;click&apos;, () =&gt; self.deleteComponent(comp));
 
         const editButton = this.ce(&apos;div&apos;, {
           class: &apos;btn btn-xxs btn-default component-settings-button component-settings-button-edit&apos;
-        }, this.ce(&apos;span&apos;, {class: &apos;glyphicon glyphicon-cog&apos;}));
+        }, this.getIcon(&apos;cog&apos;));
         this.addEventListener(editButton, &apos;click&apos;, () =&gt; self.editComponent(comp));
 
         // Add the edit buttons to the component.
@@ -504,7 +507,7 @@ export default class WebformBuilder extends Webform {
             href: componentInfo.documentation || &apos;#&apos;,
             target: &apos;_blank&apos;
           }, this.ce(&apos;i&apos;, {
-            class: &apos;glyphicon glyphicon-new-window&apos;
+            class: this.iconClass(&apos;new-window&apos;)
           }, ` ${this.t(&apos;Help&apos;)}`)))
         ])
       ]),
@@ -518,15 +521,15 @@ export default class WebformBuilder extends Webform {
           class: &apos;col col-sm-6&apos;
         }, [
           this.ce(&apos;div&apos;, {
-            class: &apos;panel panel-default preview-panel&apos;
+            class: &apos;card panel panel-default preview-panel&apos;
           }, [
             this.ce(&apos;div&apos;, {
-              class: &apos;panel-heading&apos;
+              class: &apos;card-header panel-heading&apos;
             }, this.ce(&apos;h3&apos;, {
-              class: &apos;panel-title&apos;
+              class: &apos;card-title panel-title&apos;
             }, this.t(&apos;Preview&apos;))),
             this.ce(&apos;div&apos;, {
-              class: &apos;panel-body&apos;
+              class: &apos;card-body panel-body&apos;
             }, this.componentPreview)
           ]),
           this.ce(&apos;div&apos;, {
@@ -673,49 +676,61 @@ export default class WebformBuilder extends Webform {
     }
 
     info = _.clone(info);
-    const groupAnchor = this.ce(&apos;a&apos;, {
-      href: `#group-${info.key}`
+    const groupAnchor = this.ce(&apos;button&apos;, {
+      class: &apos;btn btn-block builder-group-button&apos;,
+      &apos;data-toggle&apos;: &apos;collapse&apos;,
+      &apos;data-parent&apos;: `#${container.id}`,
+      &apos;data-target&apos;: `#group-${info.key}`
     }, this.text(info.title));
 
-    // Add a listener when it is clicked.
-    this.addEventListener(groupAnchor, &apos;click&apos;, (event) =&gt; {
-      event.preventDefault();
-      const clickedGroupId = event.target.getAttribute(&apos;href&apos;).replace(&apos;#group-&apos;, &apos;&apos;);
-      if (this.groups[clickedGroupId]) {
-        const clickedGroup = this.groups[clickedGroupId];
-        const wasIn = this.hasClass(clickedGroup.panel, &apos;in&apos;);
-        _.each(this.groups, (group, groupId) =&gt; {
-          this.removeClass(group.panel, &apos;in&apos;);
-          if ((groupId === clickedGroupId) &amp;&amp; !wasIn) {
-            this.addClass(group.panel, &apos;in&apos;);
-            let parent = group.parent;
-            while (parent) {
-              this.addClass(parent.panel, &apos;in&apos;);
-              parent = parent.parent;
-            }
-          }
-        });
+    // See if we have bootstrap.js installed.
+    const hasBootstrapJS = (typeof $ === &apos;function&apos;) &amp;&amp; (typeof $().collapse === &apos;function&apos;);
 
-        // Match the form builder height to the sidebar.
-        this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
-        this.scrollSidebar();
-      }
-    });
+    // Add a listener when it is clicked.
+    if (!hasBootstrapJS) {
+      this.addEventListener(groupAnchor, &apos;click&apos;, (event) =&gt; {
+        event.preventDefault();
+        const clickedGroupId = event.target.getAttribute(&apos;data-target&apos;).replace(&apos;#group-&apos;, &apos;&apos;);
+        if (this.groups[clickedGroupId]) {
+          const clickedGroup = this.groups[clickedGroupId];
+          const wasIn = this.hasClass(clickedGroup.panel, &apos;in&apos;);
+          _.each(this.groups, (group, groupId) =&gt; {
+            this.removeClass(group.panel, &apos;in&apos;);
+            this.removeClass(group.panel, &apos;show&apos;);
+            if ((groupId === clickedGroupId) &amp;&amp; !wasIn) {
+              this.addClass(group.panel, &apos;in&apos;);
+              this.addClass(group.panel, &apos;show&apos;);
+              let parent = group.parent;
+              while (parent) {
+                this.addClass(parent.panel, &apos;in&apos;);
+                this.addClass(parent.panel, &apos;show&apos;);
+                parent = parent.parent;
+              }
+            }
+          });
+
+          // Match the form builder height to the sidebar.
+          this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
+          this.scrollSidebar();
+        }
+      });
+    }
 
     info.element = this.ce(&apos;div&apos;, {
-      class: &apos;panel panel-default form-builder-panel&apos;,
+      class: &apos;card panel panel-default form-builder-panel&apos;,
       id: `group-panel-${info.key}`
     }, [
       this.ce(&apos;div&apos;, {
-        class: &apos;panel-heading&apos;
+        class: &apos;card-header panel-heading form-builder-group-header&apos;
       }, [
-        this.ce(&apos;h4&apos;, {
-          class: &apos;panel-title&apos;
+        this.ce(&apos;h5&apos;, {
+          class: &apos;mb-0 panel-title&apos;
         }, groupAnchor)
       ])
     ]);
     info.body = this.ce(&apos;div&apos;, {
-      class: &apos;panel-body no-drop&apos;
+      id: `group-container-${info.key}`,
+      class: &apos;card-body panel-body no-drop&apos;
     });
 
     // Add this group body to the drag containers.
@@ -724,6 +739,9 @@ export default class WebformBuilder extends Webform {
     let groupBodyClass = &apos;panel-collapse collapse&apos;;
     if (info.default) {
       groupBodyClass += &apos; in&apos;;
+      if (!hasBootstrapJS) {
+        groupBodyClass += &apos; show&apos;;
+      }
     }
 
     info.panel = this.ce(&apos;div&apos;, {
@@ -794,7 +812,8 @@ export default class WebformBuilder extends Webform {
       this.removeChildFrom(this.sideBarElement, this.builderSidebar);
     }
     this.sideBarElement = this.ce(&apos;div&apos;, {
-      class: &apos;panel-group&apos;
+      id: `builder-sidebar-${this.id}`,
+      class: &apos;accordion panel-group&apos;
     });
 
     // Add the groups.

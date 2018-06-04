@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">src/components/Validator.js | formiojs</title>
+  <title data-ice="title">src/components/Validator.js | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -245,14 +246,22 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/Validator.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import {boolValue, evaluate, getInputMask, matchInputMask} from &apos;../utils/utils&apos;;
+import {boolValue, getInputMask, matchInputMask} from &apos;../utils/utils&apos;;
 
 export default {
   get: _.get,
   each: _.each,
   has: _.has,
   checkValidator(component, validator, setting, value, data) {
-    const result = validator.check.call(this, component, setting, value, data);
+    let result = null;
+
+    // Allow each component to override their own validators by implementing the validator.method
+    if (validator.method &amp;&amp; (typeof component[validator.method] === &apos;function&apos;)) {
+      result = component[validator.method](setting, value, data);
+    }
+    else {
+      result = validator.check.call(this, component, setting, value, data);
+    }
     if (typeof result === &apos;string&apos;) {
       return result;
     }
@@ -304,6 +313,7 @@ export default {
   validators: {
     required: {
       key: &apos;validate.required&apos;,
+      method: &apos;validateRequired&apos;,
       message(component) {
         return component.t(component.errorMessage(&apos;required&apos;), {
           field: component.errorLabel,
@@ -438,12 +448,9 @@ export default {
         if (!setting) {
           return true;
         }
-        const valid = evaluate(setting, {
-          row: component.data,
+        const valid = component.evaluate(setting, {
           data,
-          component: component.component,
-          input: value,
-          instance: component
+          input: value
         });
         if (valid === null) {
           return true;
@@ -489,13 +496,10 @@ export default {
         if (!setting) {
           return true;
         }
-        const valid = evaluate(setting, {
+        const valid = component.evaluate(setting, {
           valid: true,
-          row: component.data,
           data,
-          component: component.component,
-          input: value,
-          instance: component
+          input: value
         }, &apos;valid&apos;, true);
         if (valid === null) {
           return true;

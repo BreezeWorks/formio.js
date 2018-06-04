@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/components/file/File.js | formiojs</title>
+  <title data-ice="title">src/components/file/File.js | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -373,10 +374,10 @@ export default class FileComponent extends BaseComponent {
           [
             this.ce(&apos;div&apos;, {class: &apos;col-md-1&apos;}),
             this.ce(&apos;div&apos;, {class: &apos;col-md-9&apos;},
-              this.ce(&apos;strong&apos;, {}, &apos;File Name&apos;)
+              this.ce(&apos;strong&apos;, {}, this.text(&apos;File Name&apos;))
             ),
             this.ce(&apos;div&apos;, {class: &apos;col-md-2&apos;},
-              this.ce(&apos;strong&apos;, {}, &apos;Size&apos;)
+              this.ce(&apos;strong&apos;, {}, this.text(&apos;Size&apos;))
             )
           ]
         )
@@ -511,11 +512,21 @@ export default class FileComponent extends BaseComponent {
               event.preventDefault();
               element.upload(event.dataTransfer.files);
               return false;
+            },
+            onClick: (event) =&gt; {
+              event.preventDefault();
+              // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+              // a click event on it.
+              if (typeof this.hiddenFileInputElement.trigger === &apos;function&apos;) {
+                this.hiddenFileInputElement.trigger(&apos;click&apos;);
+              }
+              else {
+                this.hiddenFileInputElement.click();
+              }
             }
           },
           [
             this.ce(&apos;i&apos;, {class: this.iconClass(&apos;cloud-upload&apos;)}),
-            this.text(&apos; Drop files to attach, or &apos;),
             this.buildBrowseLink()
           ]
           ) :
@@ -525,21 +536,10 @@ export default class FileComponent extends BaseComponent {
   }
 
   buildBrowseLink() {
-    this.browseLink = this.ce(&apos;a&apos;, {
+    this.browseLink = this.ce(&apos;span&apos;, {
       href: &apos;#&apos;,
-      onClick: (event) =&gt; {
-        event.preventDefault();
-        // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
-        // a click event on it.
-        if (typeof this.hiddenFileInputElement.trigger === &apos;function&apos;) {
-          this.hiddenFileInputElement.trigger(&apos;click&apos;);
-        }
-        else {
-          this.hiddenFileInputElement.click();
-        }
-      },
       class: &apos;browse&apos;
-    }, &apos;browse&apos;);
+    }, this.text(&apos;Tap to choose file&apos;));
 
     return this.browseLink;
   }
@@ -752,7 +752,7 @@ export default class FileComponent extends BaseComponent {
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
-        const dir = this.interpolate(this.component.dir || &apos;&apos;, {data: this.data, row: this.row});
+        const dir = this.interpolate(this.component.dir || &apos;&apos;);
         const fileService = this.fileService;
         if (!fileService) {
           fileUpload.status = &apos;error&apos;;

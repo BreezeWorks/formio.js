@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/components/table/Table.js | formiojs</title>
+  <title data-ice="title">src/components/table/Table.js | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -248,12 +249,16 @@
 import NestedComponent from &apos;../nested/NestedComponent&apos;;
 
 export default class TableComponent extends NestedComponent {
-  static get defaultTable() {
-    return [
-      [{components: []}, {components: []}, {components: []}],
-      [{components: []}, {components: []}, {components: []}],
-      [{components: []}, {components: []}, {components: []}]
-    ];
+  static emptyTable(numRows, numCols) {
+    const rows = [];
+    for (let i = 0; i &lt; numRows; i++) {
+      const cols = [];
+      for (let j = 0; j &lt; numCols; j++) {
+        cols.push({components: []});
+      }
+      rows.push(cols);
+    }
+    return rows;
   }
 
   static schema(...extend) {
@@ -263,7 +268,7 @@ export default class TableComponent extends NestedComponent {
       key: &apos;table&apos;,
       numRows: 3,
       numCols: 3,
-      rows: TableComponent.defaultTable,
+      rows: TableComponent.emptyTable(3, 3),
       header: [],
       caption: &apos;&apos;,
       striped: false,
@@ -294,7 +299,7 @@ export default class TableComponent extends NestedComponent {
     schema.rows = [];
     this.eachComponent((component) =&gt; {
       if (!schema.rows || !schema.rows.length) {
-        schema.rows = TableComponent.defaultTable;
+        schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
       }
       if (!schema.rows[component.tableRow]) {
         schema.rows[component.tableRow] = [];
@@ -305,7 +310,7 @@ export default class TableComponent extends NestedComponent {
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
     if (!schema.rows.length) {
-      schema.rows = TableComponent.defaultTable;
+      schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
     }
     return schema;
   }

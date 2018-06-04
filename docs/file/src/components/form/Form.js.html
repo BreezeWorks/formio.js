@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/components/form/Form.js | formiojs</title>
+  <title data-ice="title">src/components/form/Form.js | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -292,6 +293,34 @@ export default class FormComponent extends BaseComponent {
   }
 
   /**
+   * Render a subform.
+   *
+   * @param form
+   * @param options
+   */
+  renderSubForm(form, options) {
+    // Iterate through every component and hide the submit button.
+    eachComponent(form.components, (component) =&gt; {
+      if ((component.type === &apos;button&apos;) &amp;&amp; (component.action === &apos;submit&apos;)) {
+        component.hidden = true;
+      }
+    });
+
+    (new Form(this.element, form, options)).render().then((instance) =&gt; {
+      this.subForm = instance;
+      this.subForm.on(&apos;change&apos;, () =&gt; {
+        this.dataValue = this.subForm.getValue();
+        this.onChange();
+      });
+      this.subForm.url = this.formSrc;
+      this.subForm.nosubmit = false;
+      this.restoreValue();
+      this.subFormReadyResolve(this.subForm);
+      return this.subForm;
+    });
+  }
+
+  /**
    * Load the subform.
    */
   /* eslint-disable max-statements */
@@ -307,6 +336,12 @@ export default class FormComponent extends BaseComponent {
     }
     if (this.options &amp;&amp; this.options.project) {
       srcOptions.project = this.options.project;
+    }
+    if (this.options &amp;&amp; this.options.readOnly) {
+      srcOptions.readOnly = this.options.readOnly;
+    }
+    if (this.options &amp;&amp; this.options.viewAsHtml) {
+      srcOptions.viewAsHtml = this.options.viewAsHtml;
     }
 
     // Make sure that if reference is provided, the form must submit.
@@ -353,27 +388,15 @@ export default class FormComponent extends BaseComponent {
       }
     }
 
-    (new Formio(this.formSrc)).loadForm({params: {live: 1}}).then((formObj) =&gt; {
-      // Iterate through every component and hide the submit button.
-      eachComponent(formObj.components, (component) =&gt; {
-        if ((component.type === &apos;button&apos;) &amp;&amp; (component.action === &apos;submit&apos;)) {
-          component.hidden = true;
-        }
-      });
-
-      (new Form(this.element, formObj, srcOptions)).render().then((form) =&gt; {
-        this.subForm = form;
-        this.subForm.on(&apos;change&apos;, () =&gt; {
-          this.dataValue = this.subForm.getValue();
-          this.onChange();
-        });
-        this.subForm.url = this.formSrc;
-        this.subForm.nosubmit = false;
-        this.restoreValue();
-        this.subFormReadyResolve(this.subForm);
-        return this.subForm;
-      });
-    }).catch(err =&gt; this.subFormReadyReject(err));
+    // Determine if we already have a loaded form object.
+    if (this.component &amp;&amp; this.component.components &amp;&amp; this.component.components.length) {
+      this.renderSubForm(this.component, srcOptions);
+    }
+    else {
+      (new Formio(this.formSrc)).loadForm({params: {live: 1}})
+        .then((formObj) =&gt; this.renderSubForm(formObj, srcOptions))
+        .catch(err =&gt; this.subFormReadyReject(err));
+    }
     return this.subFormReady;
   }
   /* eslint-enable max-statements */

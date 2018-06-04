@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../">
-  <title data-ice="title">Wizard | formiojs</title>
+  <title data-ice="title">Wizard | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -244,7 +245,7 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Wizard from &apos;<span><a href="file/src/Wizard.js.html#lineNumber8">formiojs/src/Wizard.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Wizard from &apos;<span><a href="file/src/Wizard.js.html#lineNumber8">@breezeworks/formiojs/src/Wizard.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
@@ -1320,6 +1321,34 @@
         
         <div data-ice="description"><p>Build the custom style from the layout values</p>
 </div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-get-dataReady">dataReady</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -4406,6 +4435,63 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-evalContext">evalContext</a></span></span><span class="code" data-ice="signature">(additional: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Create an evaluation context for all script executions and interpolations.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-evaluate">evaluate</a></span></span><span class="code" data-ice="signature">(func: <span>*</span>, args: <span>*</span>, ret: <span>*</span>, tokenize: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-fieldLogic">fieldLogic</a></span></span><span class="code" data-ice="signature">(data: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -6437,6 +6523,34 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-dataReady">dataReady</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-get-defaultSchema">defaultSchema</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
@@ -7515,6 +7629,34 @@ within other container based components.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-setCustomValidity">setCustomValidity</a></span></span><span class="code" data-ice="signature">(message: <span>*</span>, dirty: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-setHidden">setHidden</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>)</span>
         </p>
       </div>
@@ -7628,34 +7770,6 @@ within other container based components.</p>
           
           
           <span class="code" data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-updateValue">updateValue</a></span></span><span class="code" data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/components/nested/NestedComponent.js~NestedComponent.html#instance-method-whenReady">whenReady</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -9950,7 +10064,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber215">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber214">source</a></span></span>
     </span>
   </h3>
 
@@ -10036,7 +10150,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber280">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber279">source</a></span></span>
     </span>
   </h3>
 
@@ -10079,7 +10193,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber284">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber283">source</a></span></span>
     </span>
   </h3>
 
@@ -10122,7 +10236,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber400">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber399">source</a></span></span>
     </span>
   </h3>
 
@@ -10213,7 +10327,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber152">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber151">source</a></span></span>
     </span>
   </h3>
 
@@ -10284,7 +10398,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber87">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber86">source</a></span></span>
     </span>
   </h3>
 
@@ -10340,7 +10454,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber228">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber227">source</a></span></span>
     </span>
   </h3>
 
@@ -10384,7 +10498,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber197">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber196">source</a></span></span>
     </span>
   </h3>
 
@@ -10443,7 +10557,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber260">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber259">source</a></span></span>
     </span>
   </h3>
 
@@ -10486,7 +10600,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber392">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber391">source</a></span></span>
     </span>
   </h3>
 
@@ -10545,7 +10659,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber131">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber130">source</a></span></span>
     </span>
   </h3>
 
@@ -10617,7 +10731,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber193">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber192">source</a></span></span>
     </span>
   </h3>
 
@@ -10808,7 +10922,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber161">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber160">source</a></span></span>
     </span>
   </h3>
 
@@ -10879,7 +10993,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber141">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber140">source</a></span></span>
     </span>
   </h3>
 
@@ -10950,7 +11064,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber78">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber77">source</a></span></span>
     </span>
   </h3>
 
@@ -11005,7 +11119,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber168">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber167">source</a></span></span>
     </span>
   </h3>
 
@@ -11060,7 +11174,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber236">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber235">source</a></span></span>
     </span>
   </h3>
 
@@ -11137,7 +11251,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber96">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber95">source</a></span></span>
     </span>
   </h3>
 
@@ -11192,7 +11306,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber351">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber350">source</a></span></span>
     </span>
   </h3>
 
@@ -11258,7 +11372,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber336">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber335">source</a></span></span>
     </span>
   </h3>
 
@@ -11329,7 +11443,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber124">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber123">source</a></span></span>
     </span>
   </h3>
 
@@ -11428,7 +11542,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber219">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Wizard.js.html#lineNumber218">source</a></span></span>
     </span>
   </h3>
 

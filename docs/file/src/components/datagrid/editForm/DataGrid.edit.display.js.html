@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../../">
-  <title data-ice="title">src/components/datagrid/editForm/DataGrid.edit.display.js | formiojs</title>
+  <title data-ice="title">src/components/datagrid/editForm/DataGrid.edit.display.js | @breezeworks/formiojs</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
+<meta name="description" content="Common js library for client side interaction with &lt;form.io&gt;"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@breezeworks/formiojs"><meta property="twitter:description" content="Common js library for client side interaction with &lt;form.io&gt;"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -24,7 +24,7 @@
   </span>
     <ul class="search-result"></ul>
   </div>
-<a style="position:relative; top:3px;" href="https://github.com/formio/formio.js"><img width="20px" src="./image/github.png"></a></header>
+<a style="position:relative; top:3px;" href="https://github.com/BreezeWorks/formio.js"><img width="20px" src="./image/github.png"></a></header>
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
@@ -213,6 +213,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-eachComponent">eachComponent</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-escapeRegExCharacters">escapeRegExCharacters</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-evaluate">evaluate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-fieldData">fieldData</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findComponents">findComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-flattenComponents">flattenComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formatAsCurrency">formatAsCurrency</a></span></span></li>
@@ -246,13 +247,22 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/editForm/DataGrid.edit.display.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default [
   {
+    type: &apos;checkbox&apos;,
+    label: &apos;Disable Adding / Removing Rows&apos;,
+    key: &apos;disableAddingRemovingRows&apos;,
+    tooltip: &apos;Check if you want to hide Add Another button and Remove Row button&apos;,
+    weight: 405,
+    input: true
+  },
+  {
     type: &apos;textfield&apos;,
     label: &apos;Add Another Text&apos;,
     key: &apos;addAnother&apos;,
     tooltip: &apos;Set the text of the Add Another button.&apos;,
     placeholder: &apos;Add Another&apos;,
     weight: 410,
-    input: true
+    input: true,
+    customConditional: &apos;show = !data.disableAddingRemovingRows&apos;
   },
   {
     type: &apos;select&apos;,
@@ -269,7 +279,8 @@
         {label: &apos;Both&apos;, value: &apos;both&apos;}
       ]
     },
-    weight: 420
+    weight: 420,
+    customConditional: &apos;show = !data.disableAddingRemovingRows&apos;
   }
 ];
 </code></pre>
