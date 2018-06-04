@@ -1,3 +1,7 @@
+## Notes on Breezeworks version
+ - Must set package version in both `package.json` and `src/package.json`
+ - Use `npm run publish` not `npm publish`
+
 # JavaScript powered forms and SDK for Form.io
 This library is a plain JavaScript form renderer and SDK for Form.io. This allows you to render the JSON schema forms produced by Form.io and render those within your application using plain JavaScript, as well as provides an interface SDK to communicate to the Form.io API's. The benefits of this library include.
 
