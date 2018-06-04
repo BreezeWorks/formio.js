@@ -5,16 +5,6 @@ import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
 import * as FormioUtils from '../../utils/utils';
-
-
-
-
-
-
-
-
-
-
 import Validator from '../Validator';
 import moment from 'moment';
 
@@ -810,13 +800,6 @@ export default class BaseComponent {
       defaultValue = this.evaluate(
         this.component.customDefaultValue,
         {value: ''},
-
-
-
-
-
-
-
         'value'
       );
     }
@@ -1659,10 +1642,8 @@ export default class BaseComponent {
                 {
                   value: _.clone(oldValue),
                   data,
-
                   component: newComponent,
                   result
-
                 },
                 'value'
               );
@@ -1992,9 +1973,6 @@ export default class BaseComponent {
     if (!this.key) {
       return value;
     }
-
-
-
     _.set(this.data, this.key, value);
     return value;
   }
@@ -2147,10 +2125,6 @@ export default class BaseComponent {
     return this.setValue(this.evaluate(this.component.calculateValue, {
       value: [],
       data
-
-
-
-
     }, 'value'), flags);
   }
 
@@ -2401,14 +2375,6 @@ export default class BaseComponent {
     }
 
     this._disabled = disabled;
-
-
-
-
-
-
-
-
 
     // Disable all inputs.
     _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));
