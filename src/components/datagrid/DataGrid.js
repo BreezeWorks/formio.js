@@ -234,7 +234,7 @@ export default class DataGridComponent extends NestedComponent {
     this.hook('addComponent', container, comp);
     const cellLabel = this.ce('div', {class: 'in-cell-label'}, column.label);
     if (comp.originalComponent.validate && comp.originalComponent.validate.required) {
-      cellLabel.setAttribute('class', 'field-required');
+      cellLabel.setAttribute('class', 'field-required in-cell-label');
     }
     container.appendChild(cellLabel);
     container.appendChild(comp.getElement());
