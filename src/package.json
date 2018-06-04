@@ -1,6 +1,6 @@
 {
   "name": "@breezeworks/formiojs",
-  "version": "3.0.0-alpha.18-bw6",
+  "version": "3.0.0-rc.8-bw1",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "index.js",
   "repository": {
