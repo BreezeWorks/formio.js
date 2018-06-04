@@ -36,17 +36,32 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
 /******/ 	};
 /******/
 /******/ 	// define __esModule on exports
 /******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
 /******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -151,7 +166,7 @@ eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _nativePromiseOnly = __webpack_require__(/*! native-promise-only */ \"./node_modules/native-promise-only/lib/npo.src.js\");\n\nvar _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar url = function url(formio) {\n  return {\n    title: 'Url',\n    name: 'url',\n    uploadFile: function uploadFile(file, fileName, dir, progressCallback, url) {\n      return new _nativePromiseOnly2.default(function (resolve, reject) {\n        var data = {\n          dir: dir,\n          name: fileName,\n          file: file\n        };\n\n        // Send the file with data.\n        var xhr = new XMLHttpRequest();\n\n        if (typeof progressCallback === 'function') {\n          xhr.upload.onprogress = progressCallback;\n        }\n\n        var fd = new FormData();\n        for (var key in data) {\n          fd.append(key, data[key]);\n        }\n\n        xhr.onload = function () {\n          if (xhr.status >= 200 && xhr.status < 300) {\n            // Need to test if xhr.response is decoded or not.\n            var respData = {};\n            try {\n              respData = typeof xhr.response === 'string' ? JSON.parse(xhr.response) : {};\n              respData = respData && respData.data ? respData.data : {};\n            } catch (err) {\n              respData = {};\n            }\n\n            resolve({\n              storage: 'url',\n              name: fileName,\n              url: xhr.responseURL + '/' + fileName,\n              size: file.size,\n              type: file.type,\n              data: respData\n            });\n          } else {\n            reject(xhr.response || 'Unable to upload file');\n          }\n        };\n\n        // Fire on network error.\n        xhr.onerror = function () {\n          reject(xhr);\n        };\n\n        xhr.onabort = function () {\n          reject(xhr);\n        };\n\n        xhr.open('POST', url);\n        var token = formio.getToken();\n        if (token) {\n          xhr.setRequestHeader('x-jwt-token', token);\n        }\n        xhr.send(fd);\n      });\n    },\n    downloadFile: function downloadFile(file) {\n      // Return the original as there is nothing to do.\n      return _nativePromiseOnly2.default.resolve(file);\n    }\n  };\n};\n\nurl.title = 'Url';\nexports.default = url;\n\n//# sourceURL=webpack:///./lib/providers/storage/url.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _nativePromiseOnly = __webpack_require__(/*! native-promise-only */ \"./node_modules/native-promise-only/lib/npo.src.js\");\n\nvar _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar url = function url(formio) {\n  return {\n    title: 'Url',\n    name: 'url',\n    uploadFile: function uploadFile(file, fileName, dir, progressCallback, url) {\n      return new _nativePromiseOnly2.default(function (resolve, reject) {\n        var data = {\n          dir: dir,\n          name: fileName,\n          file: file\n        };\n\n        // Send the file with data.\n        var xhr = new XMLHttpRequest();\n\n        if (typeof progressCallback === 'function') {\n          xhr.upload.onprogress = progressCallback;\n        }\n\n        var fd = new FormData();\n        for (var key in data) {\n          fd.append(key, data[key]);\n        }\n\n        xhr.onload = function () {\n          if (xhr.status >= 200 && xhr.status < 300) {\n            // Need to test if xhr.response is decoded or not.\n            var respData = {};\n            try {\n              respData = typeof xhr.response === 'string' ? JSON.parse(xhr.response) : {};\n              respData = respData && respData.data ? respData.data : respData;\n            } catch (err) {\n              respData = {};\n            }\n\n            resolve({\n              storage: 'url',\n              name: fileName,\n              url: xhr.responseURL + '/' + fileName,\n              size: file.size,\n              type: file.type,\n              data: respData\n            });\n          } else {\n            reject(xhr.response || 'Unable to upload file');\n          }\n        };\n\n        // Fire on network error.\n        xhr.onerror = function () {\n          reject(xhr);\n        };\n\n        xhr.onabort = function () {\n          reject(xhr);\n        };\n\n        xhr.open('POST', url);\n        var token = formio.getToken();\n        if (token) {\n          xhr.setRequestHeader('x-jwt-token', token);\n        }\n        xhr.send(fd);\n      });\n    },\n    downloadFile: function downloadFile(file) {\n      // Return the original as there is nothing to do.\n      return _nativePromiseOnly2.default.resolve(file);\n    }\n  };\n};\n\nurl.title = 'Url';\nexports.default = url;\n\n//# sourceURL=webpack:///./lib/providers/storage/url.js?");
 
 /***/ }),
 
@@ -239,7 +254,7 @@ eval("/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("var g;\r\n\r\n// This works in non-strict mode\r\ng = (function() {\r\n\treturn this;\r\n})();\r\n\r\ntry {\r\n\t// This works if eval is allowed (see CSP)\r\n\tg = g || Function(\"return this\")() || (1, eval)(\"this\");\r\n} catch (e) {\r\n\t// This works if the window reference is available\r\n\tif (typeof window === \"object\") g = window;\r\n}\r\n\r\n// g can still be undefined, but nothing to do about it...\r\n// We return undefined, instead of nothing here, so it's\r\n// easier to handle this case. if(!global) { ...}\r\n\r\nmodule.exports = g;\r\n\n\n//# sourceURL=webpack:///(webpack)/buildin/global.js?");
+eval("var g;\n\n// This works in non-strict mode\ng = (function() {\n\treturn this;\n})();\n\ntry {\n\t// This works if eval is allowed (see CSP)\n\tg = g || Function(\"return this\")() || (1, eval)(\"this\");\n} catch (e) {\n\t// This works if the window reference is available\n\tif (typeof window === \"object\") g = window;\n}\n\n// g can still be undefined, but nothing to do about it...\n// We return undefined, instead of nothing here, so it's\n// easier to handle this case. if(!global) { ...}\n\nmodule.exports = g;\n\n\n//# sourceURL=webpack:///(webpack)/buildin/global.js?");
 
 /***/ }),
 

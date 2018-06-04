@@ -46,7 +46,8 @@ export default class DataGridComponent extends NestedComponent {
 
   hasAddButton() {
     const maxLength = _.get(this.component, 'validate.maxLength');
-    return !this.shouldDisable &&
+    return !this.component.disableAddingRemovingRows &&
+    !this.shouldDisable &&
       !this.options.builder &&
       !this.options.preview &&
       (!maxLength || (this.dataValue.length < maxLength));
@@ -57,7 +58,8 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   hasRemoveButtons() {
-    return !this.shouldDisable &&
+    return !this.component.disableAddingRemovingRows &&
+      !this.shouldDisable &&
       !this.options.builder &&
       (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
@@ -223,10 +225,11 @@ export default class DataGridComponent extends NestedComponent {
     container.noDrop = true;
     const column = _.clone(col);
     const options = _.clone(this.options);
-    options.name += `[${colIndex}]`;
+    options.name += `[${rowIndex}]`;
+    options.row = `${rowIndex}-${colIndex}`;
     const comp = this.createComponent(_.assign({}, column, {
       label: column.dataGridLabel ? column.label : false,
-      row: `${rowIndex}-${colIndex}`
+      row: options.row
     }), options, row);
     this.hook('addComponent', container, comp);
     const cellLabel = this.ce('div', {class: 'in-cell-label'}, column.label);
